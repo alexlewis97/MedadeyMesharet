@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import {
-  metricsOfWorld, worldScore, worldTarget, metricScoresByEntity,
-} from '../data.js'
+import { DIVISIONS, worldMetrics, worldScore, worldTarget } from '../data.js'
+import { DonutChart, PieChartSimple, CategoryBarChart, KpiPercent, PALETTE } from '../components/Charts.jsx'
 
-export default function WorldScreen({ world, onOpenUnit }) {
-  const [drill, setDrill] = useState(null) // null = חטיבות, אחרת שם חטיבה -> יחידות
-  const defs = metricsOfWorld(world)
+// מסך עולם תוכן מאוחד - כל המדדים, ברירת מחדל כל היחידות + סינון לפי חטיבה
+export default function WorldScreen({ world }) {
+  const [division, setDivision] = useState(null) // null = כל היחידות
+  const metrics = worldMetrics(world, division)
   const score = worldScore(world)
   const delta = score - worldTarget(world)
 
@@ -19,96 +19,112 @@ export default function WorldScreen({ world, onOpenUnit }) {
         </span>
       </h1>
 
-      <div className="breadcrumb">
-        {drill ? (
-          <>
-            <button onClick={() => setDrill(null)}>כל החטיבות</button>
-            <span>›</span>
-            <span>{drill} — לחיצה על יחידה לפירוט הקטגוריות</span>
-          </>
-        ) : (
-          <span>לחיצה על חטיבה להצגת היחידות שתחתיה</span>
-        )}
+      {/* סינון לפי חטיבה */}
+      <div className="metric-tabs">
+        <button
+          className={'metric-tab' + (division === null ? ' active' : '')}
+          onClick={() => setDivision(null)}
+        >
+          כל החטיבות
+        </button>
+        {DIVISIONS.map((d) => (
+          <button
+            key={d.name}
+            className={'metric-tab' + (division === d.name ? ' active' : '')}
+            onClick={() => setDivision(d.name)}
+          >
+            {d.name}
+          </button>
+        ))}
       </div>
 
-      {/* לכל מדד - גרף עמודות; עד 2 גרפים בשורה */}
       <div className="metrics-grid">
-        {defs.map((def) => (
-          <MetricScores
-            key={def.metric}
-            def={def}
-            drill={drill}
-            onDrill={setDrill}
-            onOpenUnit={(unit) => onOpenUnit(world, drill, unit)}
-          />
+        {metrics.map((m) => (
+          <MetricPanel key={m.metric} m={m} division={division} />
         ))}
       </div>
     </div>
   )
 }
 
-function MetricScores({ def, drill, onDrill, onOpenUnit }) {
-  const rows = metricScoresByEntity(def.world, def.metric, drill)
-  const max = Math.max(...rows.map((r) => r.score))
-
+function MetricPanel({ m, division }) {
   return (
-    <div className="panel">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <h3 className="panel-title">{def.metric}</h3>
-          <p className="panel-sub">
-            ציון לכל {drill ? 'יחידה' : 'חטיבה'} מול היעד · {def.period === 'annual' ? 'שנתי' : 'רבעוני'} ·{' '}
-            {def.focus === 'positive' ? 'במיקוד חיובי' : 'במיקוד שלילי'}
-          </p>
-        </div>
+    <div className="panel metric-panel">
+      <div>
+        <h3 className="panel-title">{m.metric}</h3>
+        <p className="panel-sub">
+          {division ? `יחידות ${division}` : 'ממוצע / התפלגות בחטיבות'} ·{' '}
+          {m.period === 'annual' || m.period === '2026' ? 'שנתי' : 'רבעוני'}
+        </p>
       </div>
 
-      <div
-        className="bar-rank"
-        style={{ gridTemplateColumns: `repeat(${rows.length}, 1fr)` }}
-      >
-        {rows.map((r) => (
-          <div
-            key={r.name}
-            className="col clickable"
-            onClick={() => (drill ? onOpenUnit(r.name) : onDrill(r.name))}
-            title={drill ? 'הצג פירוט קטגוריות' : 'הצג יחידות'}
-          >
-            <div className="v">{r.score}</div>
-            <div className="track">
-              <div
-                className="b"
-                style={{
-                  height: `${r.score}%`,
-                  background: r.score === max ? 'var(--blue)' : 'var(--blue-soft)',
-                }}
-              />
-              <div className="target-line" style={{ bottom: `${Math.min(98, r.target)}%` }} />
+      <MetricChart m={m} />
 
-              <div className="bar-hover">
-                <div className="bar-hover-head">
-                  <span>{r.name}</span>
-                  <span className="bh-target">יעד / {r.target}</span>
-                  <strong>{r.score}</strong>
-                </div>
-                <div className="bar-hover-row">
-                  <span className="bh-name">ציון נוכחי</span>
-                  <span className="bh-val"><strong>{r.score}</strong></span>
-                </div>
-                <div className="bar-hover-row">
-                  <span className="bh-name">יעד לפעם הבאה</span>
-                  <span className="bh-val"><strong>{r.target}</strong></span>
-                </div>
-                <div className="bar-hover-row">
-                  <span className="bh-name">אוכלוסיית המדד</span>
-                  <span className="bh-val"><strong>{r.population}</strong></span>
-                </div>
-              </div>
-            </div>
-            <div className="lbl">{r.name}</div>
+      {/* התפלגות ציונים - לכל חטיבה/יחידה בתחתית הגרף */}
+      <div className="score-strip">
+        <div className="score-strip-cell total">
+          <div className="ss-score">{m.totalScore}</div>
+          <div className="ss-name">סה"כ</div>
+        </div>
+        {m.scores.map((s) => (
+          <div className="score-strip-cell" key={s.name}>
+            <div className="ss-score">{s.score}</div>
+            <div className="ss-name">{s.name}</div>
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+function MetricChart({ m }) {
+  // bar = כמויות ; donut/pie = אחוזים ; kpi = מדד בינארי אחוזי
+  if (m.graphType === 'bar') {
+    return <CategoryBarChart categories={m.categories} counts={m.counts} height={210} />
+  }
+
+  if (m.graphType === 'kpi') {
+    // אחוז הקטגוריה הראשונה (החיובית)
+    const percent = m.percentages[0] || 0
+    return (
+      <div className="chart-with-legend">
+        <KpiPercent percent={percent} label={m.categories[0]} size={170} />
+        <Legend categories={m.categories} percentages={m.percentages} />
+      </div>
+    )
+  }
+
+  // donut (עם מרכז סה"כ) או pie
+  return (
+    <div className="chart-with-legend">
+      <Legend categories={m.categories} percentages={m.percentages} />
+      {m.graphType === 'donut' ? (
+        <DonutChart
+          data={m.categories.map((c, i) => ({ name: c, value: m.counts[i] }))}
+          size={180}
+          centerTop={m.total.toLocaleString()}
+          centerBottom={m.unit}
+        />
+      ) : (
+        <PieChartSimple
+          data={m.categories.map((c, i) => ({ name: c, value: m.counts[i] }))}
+          size={180}
+        />
+      )}
+    </div>
+  )
+}
+
+function Legend({ categories, percentages }) {
+  return (
+    <div className="metric-legend">
+      {categories.map((c, i) => (
+        <div className="ml-row" key={c}>
+          <span className="ml-pct">{percentages[i]}%</span>
+          <span className="ml-name">{c}</span>
+          <span className="ml-sw" style={{ background: PALETTE[i % PALETTE.length] }} />
+        </div>
+      ))}
     </div>
   )
 }

@@ -324,3 +324,50 @@ button { font-family: inherit; cursor: pointer; }
 .score-row .sc small { color: var(--ink-faint); font-weight: 500; }
 
 .tooltip-box { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 12px; box-shadow: var(--shadow); direction: rtl; text-align: right; }
+
+/* ---------------- World screen metric panels ---------------- */
+.metric-panel { display: flex; flex-direction: column; }
+
+/* מרכז של דונאט / מד KPI */
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.donut-center-top { font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1.1; }
+.donut-center-bottom { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+
+/* גרף + מקרא זה לצד זה */
+.chart-with-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0 14px;
+}
+
+.metric-legend { display: flex; flex-direction: column; gap: 8px; min-width: 130px; }
+.ml-row { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.ml-pct { font-size: 13px; font-weight: 700; color: var(--ink); width: 38px; text-align: left; }
+.ml-name { font-size: 12px; color: var(--ink-soft); flex: 1; text-align: right; }
+.ml-sw { width: 12px; height: 12px; border-radius: 4px; flex: 0 0 12px; }
+
+/* רצועת ציונים בתחתית כל גרף */
+.score-strip {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  gap: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: auto;
+}
+.score-strip-cell { flex: 1; text-align: center; }
+.score-strip-cell .ss-score { font-size: 16px; font-weight: 800; color: var(--ink); }
+.score-strip-cell .ss-name { font-size: 10px; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.score-strip-cell.total .ss-score { color: var(--blue); }
+.score-strip-cell.total { border-left: 1px solid var(--line); padding-left: 6px; }

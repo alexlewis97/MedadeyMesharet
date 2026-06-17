@@ -5,11 +5,47 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
 } from 'recharts'
 
-// פלטת צבעים בהשראת ה-figma
-export const PALETTE = ['#f72585', '#2f6bff', '#9db9ff', '#f9a8cd', '#c7d6ff']
+// פלטת צבעים בהשראת ה-figma (כחולים וסגולים)
+export const PALETTE = ['#1f2a52', '#2f6bff', '#7b8ff0', '#9d7bd8', '#c3b6e8']
 
-export function DonutChart({ data, size = 150 }) {
+export function DonutChart({ data, size = 170, centerTop, centerBottom }) {
   // data: [{ name, value }]
+  const total = data.reduce((s, d) => s + d.value, 0) || 1
+  return (
+    <div style={{ width: size, height: size, margin: '0 auto', position: 'relative' }}>
+      <ResponsiveContainer>
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="name"
+            innerRadius={size * 0.3}
+            outerRadius={size / 2 - 6}
+            paddingAngle={2}
+            startAngle={90}
+            endAngle={-270}
+            stroke="#fff"
+            strokeWidth={2}
+            cornerRadius={6}
+          >
+            {data.map((_, i) => (
+              <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
+            ))}
+          </Pie>
+          <Tooltip content={<PieTip total={total} />} />
+        </PieChart>
+      </ResponsiveContainer>
+      {(centerTop || centerBottom) && (
+        <div className="donut-center">
+          {centerTop && <div className="donut-center-top">{centerTop}</div>}
+          {centerBottom && <div className="donut-center-bottom">{centerBottom}</div>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function PieChartSimple({ data, size = 170 }) {
   const total = data.reduce((s, d) => s + d.value, 0) || 1
   return (
     <div style={{ width: size, height: size, margin: '0 auto' }}>
@@ -20,13 +56,11 @@ export function DonutChart({ data, size = 150 }) {
             dataKey="value"
             nameKey="name"
             innerRadius={0}
-            outerRadius={size / 2 - 6}
+            outerRadius={size / 2 - 4}
             startAngle={90}
             endAngle={-270}
             stroke="#fff"
             strokeWidth={2}
-            label={({ value }) => `${Math.round((value / total) * 100)}%`}
-            labelLine={false}
           >
             {data.map((_, i) => (
               <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
@@ -35,6 +69,39 @@ export function DonutChart({ data, size = 150 }) {
           <Tooltip content={<PieTip total={total} />} />
         </PieChart>
       </ResponsiveContainer>
+    </div>
+  )
+}
+
+// מד KPI אחוזי למדד בינארי
+export function KpiPercent({ percent, label, size = 170 }) {
+  const data = [
+    { name: 'חיובי', value: percent },
+    { name: 'יתר', value: 100 - percent },
+  ]
+  return (
+    <div style={{ width: size, height: size, margin: '0 auto', position: 'relative' }}>
+      <ResponsiveContainer>
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            innerRadius={size * 0.34}
+            outerRadius={size / 2 - 6}
+            startAngle={90}
+            endAngle={-270}
+            stroke="none"
+            cornerRadius={8}
+          >
+            <Cell fill="#2f6bff" />
+            <Cell fill="#eef1f8" />
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="donut-center">
+        <div className="donut-center-top" style={{ color: '#2f6bff' }}>{percent}%</div>
+        {label && <div className="donut-center-bottom">{label}</div>}
+      </div>
     </div>
   )
 }
@@ -110,7 +177,7 @@ export function CategoryBarChart({ categories, counts, height = 220 }) {
           <Tooltip content={<BarTip />} cursor={{ fill: 'rgba(47,107,255,0.06)' }} />
           <Bar dataKey="value" radius={[10, 10, 4, 4]} label={{ position: 'top', fontSize: 12, fill: '#1f2547' }}>
             {data.map((_, i) => (
-              <Cell key={i} fill={i === maxIndex(counts) ? '#f72585' : '#2f6bff'} />
+              <Cell key={i} fill={i === maxIndex(counts) ? '#2f6bff' : '#9db9ff'} />
             ))}
           </Bar>
         </BarChart>

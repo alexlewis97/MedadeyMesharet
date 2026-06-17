@@ -23,15 +23,16 @@ export const DIVISIONS = [
 ]
 
 // הגדרת המדדים בכל עולם תוכן: שם, מיקוד, תדירות, סוג גרף, וקטגוריות הפילוח
+// graphType: 'bar' (כמויות) | 'donut' | 'pie' | 'kpi' (מדד בינארי - אחוז)
 export const METRIC_DEFS = [
   // משאבי זמן
-  { world: 'משאבי זמן', metric: 'ניצול ימי חופשה', focus: 'positive', period: 'quarterly', graphType: 'pie',
-    unit: 'ימים', categories: ['0-5', '6-10', '11-16', '17-22', '23+'] },
-  { world: 'משאבי זמן', metric: 'מימוש ימי מחלה', focus: 'negative', period: 'quarterly', graphType: 'pie',
-    unit: 'ימים', categories: ['0-2', '3-5', '6-9', '10-14', '15+'] },
-  { world: 'משאבי זמן', metric: 'איזון מול שחיקה', focus: 'negative', period: 'quarterly', graphType: 'pie',
-    unit: 'דירוג', categories: ['שחיקה', 'איזון'] },
-  { world: 'משאבי זמן', metric: 'מידת שחיקה', focus: 'negative', period: 'quarterly', graphType: 'pie',
+  { world: 'משאבי זמן', metric: 'ניצול ימי חופשה', focus: 'positive', period: 'quarterly', graphType: 'donut',
+    unit: 'ימים', categories: ['0-20%', '20-41%', '41-60%', '60-80%', '80-100%'] },
+  { world: 'משאבי זמן', metric: 'מימוש ימי מחלה', focus: 'negative', period: 'quarterly', graphType: 'donut',
+    unit: 'ימים', categories: ['0-5', '6-10', '11-15', '16-20', '20+'] },
+  { world: 'משאבי זמן', metric: 'איזון מול שחיקה', focus: 'positive', period: 'quarterly', graphType: 'kpi',
+    unit: 'דירוג', categories: ['איזון', 'שחיקה'] },
+  { world: 'משאבי זמן', metric: 'מידת שחיקה', focus: 'negative', period: 'quarterly', graphType: 'bar',
     unit: 'דירוג', categories: ['לא חשים שחיקה', 'מידה מעטה', 'בינונית', 'מרובה', 'מרובה מאוד'] },
 
   // סביבת עבודה
@@ -39,40 +40,50 @@ export const METRIC_DEFS = [
     unit: 'דירוג', categories: ['מרוצה מאוד', 'מרוצה', 'לא מרוצה', 'מאוד לא מרוצה'] },
   { world: 'סביבת עבודה', metric: 'תקלות בינוי', focus: 'negative', period: 'quarterly', graphType: 'bar',
     unit: 'תקלות', categories: ['0-10', '11-20', '21-30', '31-40', '41+'] },
-  { world: 'סביבת עבודה', metric: 'בקשות הלנה', focus: 'negative', period: 'quarterly', graphType: 'number',
+  { world: 'סביבת עבודה', metric: 'בקשות הלנה', focus: 'negative', period: 'quarterly', graphType: 'bar',
     unit: 'בקשות', categories: ['0-30', '31-60', '61-90', '91-120', '121+'] },
+  { world: 'סביבת עבודה', metric: 'תחושת ביטחון תעסוקתי', focus: 'positive', period: 'annual', graphType: 'kpi',
+    unit: 'דירוג', categories: ['חשים ביטחון', 'לא חשים ביטחון'] },
 
   // שיוך וגיוס
-  { world: 'שיוך וגיוס', metric: 'שביעות רצון מהגיוס', focus: 'positive', period: 'annual', graphType: 'pie',
+  { world: 'שיוך וגיוס', metric: 'שביעות רצון מהגיוס', focus: 'positive', period: 'annual', graphType: 'donut',
     unit: 'דירוג', categories: ['גבוה מאוד', 'גבוה', 'בינוני', 'נמוך', 'נמוך מאוד'] },
   { world: 'שיוך וגיוס', metric: 'זמן קליטה', focus: 'negative', period: 'quarterly', graphType: 'bar',
     unit: 'ימים', categories: ['0-7', '8-14', '15-21', '22-30', '31+'] },
   { world: 'שיוך וגיוס', metric: 'תחושת שייכות', focus: 'positive', period: 'annual', graphType: 'pie',
     unit: 'דירוג', categories: ['חזקה מאוד', 'חזקה', 'בינונית', 'חלשה', 'חלשה מאוד'] },
+  { world: 'שיוך וגיוס', metric: 'ממליץ על השירות', focus: 'positive', period: 'annual', graphType: 'kpi',
+    unit: 'דירוג', categories: ['ממליץ', 'לא ממליץ'] },
 
   // פיתוח אישי ומקצועי
   { world: 'פיתוח אישי ומקצועי', metric: 'הזדמנויות קידום', focus: 'positive', period: 'annual', graphType: 'pie',
     unit: 'דירוג', categories: ['רבות מאוד', 'רבות', 'בינוני', 'מעט', 'מעט מאוד'] },
   { world: 'פיתוח אישי ומקצועי', metric: 'ימי הכשרה', focus: 'positive', period: 'quarterly', graphType: 'bar',
     unit: 'ימים', categories: ['0-3', '4-7', '8-12', '13-18', '19+'] },
-  { world: 'פיתוח אישי ומקצועי', metric: 'משוב מקצועי', focus: 'positive', period: 'annual', graphType: 'pie',
+  { world: 'פיתוח אישי ומקצועי', metric: 'משוב מקצועי', focus: 'positive', period: 'annual', graphType: 'donut',
     unit: 'דירוג', categories: ['מצוין', 'טוב', 'בינוני', 'חלש'] },
+  { world: 'פיתוח אישי ומקצועי', metric: 'מרוצה ממסלול הפיתוח', focus: 'positive', period: 'annual', graphType: 'kpi',
+    unit: 'דירוג', categories: ['מרוצה', 'לא מרוצה'] },
 
   // שירותיות משופרת
   { world: 'שירותיות משופרת', metric: 'זמן מענה לפניות', focus: 'negative', period: 'quarterly', graphType: 'bar',
     unit: 'שעות', categories: ['0-2', '3-5', '6-12', '13-24', '24+'] },
-  { world: 'שירותיות משופרת', metric: 'שביעות רצון מהשירות', focus: 'positive', period: 'annual', graphType: 'pie',
+  { world: 'שירותיות משופרת', metric: 'שביעות רצון מהשירות', focus: 'positive', period: 'annual', graphType: 'donut',
     unit: 'דירוג', categories: ['מרוצה מאוד', 'מרוצה', 'נייטרלי', 'לא מרוצה'] },
   { world: 'שירותיות משופרת', metric: 'פניות שטופלו', focus: 'positive', period: 'quarterly', graphType: 'bar',
     unit: 'אחוז', categories: ['0-20', '21-40', '41-60', '61-80', '81-100'] },
+  { world: 'שירותיות משופרת', metric: 'פתרון מהפעם הראשונה', focus: 'positive', period: 'quarterly', graphType: 'kpi',
+    unit: 'דירוג', categories: ['נפתר', 'לא נפתר'] },
 
   // שימור אנושי
   { world: 'שימור אנושי', metric: 'אחוז עזיבה', focus: 'negative', period: 'annual', graphType: 'bar',
     unit: 'אחוז', categories: ['0-5', '6-10', '11-15', '16-20', '21+'] },
   { world: 'שימור אנושי', metric: 'כוונת הישארות', focus: 'positive', period: 'annual', graphType: 'pie',
     unit: 'דירוג', categories: ['בוודאות', 'כנראה', 'מתלבט', 'כנראה שלא', 'בוודאות שלא'] },
-  { world: 'שימור אנושי', metric: 'תחושת הערכה', focus: 'positive', period: 'annual', graphType: 'pie',
+  { world: 'שימור אנושי', metric: 'תחושת הערכה', focus: 'positive', period: 'annual', graphType: 'donut',
     unit: 'דירוג', categories: ['גבוהה מאוד', 'גבוהה', 'בינונית', 'נמוכה'] },
+  { world: 'שימור אנושי', metric: 'גאוות יחידה', focus: 'positive', period: 'annual', graphType: 'kpi',
+    unit: 'דירוג', categories: ['גאים', 'לא גאים'] },
 ]
 
 // ---- מחולל מספרים פסבדו-אקראי דטרמיניסטי (כדי שהנתונים יהיו יציבים) ----
@@ -275,4 +286,55 @@ export function unitBreakdown(world, unit) {
   return BREAKDOWN_TABLE.filter(
     (x) => !x.isDivision && x.world === world && x.unitName === unit
   )
+}
+
+// ============================================================================
+// מסך עולם תוכן (מאוחד) - לכל מדד: פילוח קטגוריות מצרפי + ציון לכל חטיבה
+// divisionFilter: null = כל היחידות, אחרת מסונן לחטיבה ספציפית
+// ============================================================================
+export function worldMetrics(world, divisionFilter) {
+  const defs = metricsOfWorld(world)
+  return defs.map((def) => {
+    // צבירת הכמויות בקטגוריות על פני כל היחידות (או יחידות החטיבה המסוננת)
+    const rows = BREAKDOWN_TABLE.filter(
+      (x) =>
+        !x.isDivision &&
+        x.world === world &&
+        x.metric === def.metric &&
+        (!divisionFilter || x.divisionName === divisionFilter)
+    )
+    const counts = def.categories.map((_, i) =>
+      rows.reduce((s, r) => s + r.counts[i], 0)
+    )
+    const total = counts.reduce((s, x) => s + x, 0) || 1
+    const percentages = counts.map((c) => Math.round((c / total) * 100))
+
+    // ציון לכל חטיבה (או לכל יחידה אם סוננה חטיבה) - לתצוגה בתחתית הגרף
+    const scores = divisionFilter
+      ? SCORES_TABLE.filter(
+          (x) => !x.isDivision && x.world === world && x.metric === def.metric && x.divisionName === divisionFilter
+        ).map((x) => ({ name: shortName(x.unitName), score: x.score }))
+      : SCORES_TABLE.filter(
+          (x) => x.isDivision && x.world === world && x.metric === def.metric
+        ).map((x) => ({ name: shortName(x.divisionName), score: x.score }))
+
+    // ציון מצרפי (סה"כ) לראש שורת הציונים
+    const totalScore = Math.round(
+      scores.reduce((s, x) => s + x.score, 0) / (scores.length || 1)
+    )
+
+    return {
+      ...def,
+      counts,
+      percentages,
+      total,
+      scores,
+      totalScore,
+    }
+  })
+}
+
+function shortName(full) {
+  // 'חטיבת ספרה' -> 'ספרה' ; 'יחידת תוכנה' -> 'תוכנה'
+  return full.replace(/^חטיבת\s+/, '').replace(/^יחידת\s+/, '')
 }
