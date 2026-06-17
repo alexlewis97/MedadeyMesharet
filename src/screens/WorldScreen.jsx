@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
-import { DIVISIONS, worldMetrics, worldScore, worldTarget } from '../data.js'
+import React from 'react'
+import { worldMetrics, worldScore, worldTarget } from '../data.js'
 import {
   DonutChart, CategoryBarChart, DivisionBarChart, DashedBar, PercentOnly, PALETTE,
 } from '../components/Charts.jsx'
 
 // מסך עולם תוכן - תצוגת תחקור עומק לכל המדדים בתחום
-export default function WorldScreen({ world }) {
-  const [division, setDivision] = useState(null) // null = נתונים אגפיים (כל החטיבות)
+export default function WorldScreen({ world, division }) {
   const metrics = worldMetrics(world, division)
   const score = worldScore(world)
   const delta = score - worldTarget(world)
@@ -21,24 +20,9 @@ export default function WorldScreen({ world }) {
         </span>
       </h1>
 
-      {/* סינון לפי חטיבה */}
-      <div className="metric-tabs">
-        <button
-          className={'metric-tab' + (division === null ? ' active' : '')}
-          onClick={() => setDivision(null)}
-        >
-          נתונים אגפיים
-        </button>
-        {DIVISIONS.map((d) => (
-          <button
-            key={d.name}
-            className={'metric-tab' + (division === d.name ? ' active' : '')}
-            onClick={() => setDivision(d.name)}
-          >
-            {d.name}
-          </button>
-        ))}
-      </div>
+      {division && (
+        <div className="breadcrumb"><span>מסונן לפי: {division}</span></div>
+      )}
 
       <div className="metrics-grid">
         {metrics.map((m) => (

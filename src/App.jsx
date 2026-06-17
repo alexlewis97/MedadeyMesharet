@@ -7,6 +7,8 @@ import WorldScreen from './screens/WorldScreen.jsx'
 export default function App() {
   // view: { type: 'home' | 'world', world }
   const [view, setView] = useState({ type: 'home' })
+  // סינון עליון שמשפיע על כל הדף
+  const [filters, setFilters] = useState({ division: null, period: 'רבעון אחרון', rank: 'כל הדרגות' })
 
   const activeNav = view.type === 'home' ? '__home' : view.world
 
@@ -23,9 +25,13 @@ export default function App() {
     <div className="app">
       <Sidebar active={activeNav} onSelect={selectNav} />
       <main className="main">
-        <TopBar />
-        {view.type === 'home' && <HomeScreen onOpenWorld={openWorld} />}
-        {view.type === 'world' && <WorldScreen world={view.world} />}
+        <TopBar filters={filters} onChange={setFilters} />
+        {view.type === 'home' && (
+          <HomeScreen onOpenWorld={openWorld} division={filters.division} />
+        )}
+        {view.type === 'world' && (
+          <WorldScreen world={view.world} division={filters.division} />
+        )}
       </main>
     </div>
   )

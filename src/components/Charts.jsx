@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   BarChart, Bar, XAxis, YAxis, Tooltip,
 } from 'recharts'
 
@@ -116,39 +116,88 @@ function PieTip({ active, payload, total }) {
   )
 }
 
-// תווית ציר עכביש - שם עולם התוכן + ציון/יעד מתחתיו
-function WorldTick({ x, y, payload, data }) {
+// תווית ציר עכביש - שם עולם התוכן + שתי תוויות (ציון / יעד) מתחתיו, בסגנון הפיגמה
+function WorldTick({ x, y, payload, data, cx, cy }) {
   const item = data.find((d) => d.axis === payload.value)
+  const score = item ? item.score : 0
+  const target = item ? item.target : 100
+
+  // הסטה רדיאלית החוצה מהמרכז כדי שהתוויות לא יתנגשו עם הפוליגון
+  const dx = x - cx
+  const dy = y - cy
+  const len = Math.sqrt(dx * dx + dy * dy) || 1
+  const PUSH = 26
+  const tx = x + (dx / len) * PUSH
+  const ty = y + (dy / len) * PUSH
+
+  const isMiddle = Math.abs(dx) < 30
+  const anchor = isMiddle ? 'middle' : tx > cx ? 'start' : 'end'
+  const badgeW = 34
+  const badgeH = 20
+  const gap = 6
+  const totalW = badgeW * 2 + gap
+  let startX
+  if (anchor === 'middle') startX = tx - totalW / 2
+  else if (anchor === 'start') startX = tx
+  else startX = tx - totalW
+
+  // האם התווית בחצי העליון - נציב את התגיות מעל השם
+  const labelAbove = ty < cy
+  const nameY = labelAbove ? ty - 6 : ty
+  const badgeY = labelAbove ? ty - badgeH - 22 : ty + 8
+
   return (
     <g>
-      <text x={x} y={y} textAnchor="middle" fill="#3a3f5c" fontSize="12" fontWeight="600">
+      <text x={tx} y={nameY} textAnchor={anchor} fill="#3a3f5c" fontSize="13" fontWeight="700">
         {payload.value}
       </text>
-      {item && (
-        <text x={x} y={y + 16} textAnchor="middle" fontSize="11">
-          <tspan fill="#2f6bff" fontWeight="700">{item.score}</tspan>
-          <tspan fill="#aeb2c7"> / {item.target}</tspan>
+      {/* תווית ציון - רקע כחול בהיר */}
+      <g transform={`translate(${startX}, ${badgeY})`}>
+        <rect width={badgeW} height={badgeH} rx="6" fill="#e8edff" />
+        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#2f6bff" fontSize="12" fontWeight="700">
+          {score}
         </text>
-      )}
+      </g>
+      {/* תווית יעד - רקע אפור בהיר */}
+      <g transform={`translate(${startX + badgeW + gap}, ${badgeY})`}>
+        <rect width={badgeW} height={badgeH} rx="6" fill="#eef0f5" />
+        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#9aa0b4" fontSize="12" fontWeight="700">
+          {target}
+        </text>
+      </g>
     </g>
   )
 }
 
-export function SpiderChart({ data, height = 340 }) {
+function SpiderLegend() {
+  return (
+    <div className="radar-legend">
+      <span className="rdl-item"><span className="rdl-sw score" /> ציון</span>
+      <span className="rdl-vs">vs.</span>
+      <span className="rdl-item"><span className="rdl-sw target" /> יעד</span>
+    </div>
+  )
+}
+
+export function SpiderChart({ data, height = 380 }) {
   // data: [{ axis, score, target }]
   return (
-    <div style={{ width: '100%', height }}>
-      <ResponsiveContainer>
-        <RadarChart data={data} outerRadius="68%" margin={{ top: 30, right: 60, bottom: 20, left: 60 }}>
-          <PolarGrid stroke="#e3e7f2" />
-          <PolarAngleAxis dataKey="axis" tick={<WorldTick data={data} />} />
-          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-          <Radar name="יעד" dataKey="target" stroke="#9db9ff" fill="#9db9ff" fillOpacity={0.35} />
-          <Radar name="ציון" dataKey="score" stroke="#3a3aff" fill="#5b6dff" fillOpacity={0.45} />
-          <Tooltip content={<RadarTip />} />
-          <Legend />
-        </RadarChart>
-      </ResponsiveContainer>
+    <div style={{ position: 'relative' }}>
+      <SpiderLegend />
+      <div style={{ width: '100%', height }}>
+        <ResponsiveContainer>
+          <RadarChart data={data} outerRadius="72%" margin={{ top: 70, right: 90, bottom: 60, left: 90 }}>
+            <PolarGrid stroke="#d4d9e6" strokeDasharray="5 5" gridType="polygon" />
+            <PolarAngleAxis dataKey="axis" tick={<WorldTick data={data} />} />
+            <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+            {/* יעד - סגול */}
+            <Radar name="יעד" dataKey="target" stroke="#8b7fe8" strokeWidth={2} fill="#8b7fe8" fillOpacity={0.12} />
+            {/* ציון - כחול */}
+            <Radar name="ציון" dataKey="score" stroke="#4762e5" strokeWidth={2.5} fill="#4762e5" fillOpacity={0.28} />
+            <Tooltip content={<RadarTip />} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

@@ -1,11 +1,11 @@
 :root {
-  --bg: #f4f6fb;
+  --bg: #eef1f8;
   --panel: #ffffff;
   --ink: #1f2547;
   --ink-soft: #8b90a9;
   --ink-faint: #aeb2c7;
   --blue: #2f6bff;
-  --blue-soft: #9db9ff;
+  --blue-soft: #c2d1f7;
   --pink: #f72585;
   --pink-soft: #f9a8cd;
   --green: #1fbf75;
@@ -37,7 +37,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .main {
-  padding: 22px 30px 60px;
+  padding: 16px 24px 40px;
   overflow-x: hidden;
 }
 
@@ -61,16 +61,15 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 18px;
   margin-bottom: 28px;
 }
-.brand .logo {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #3a4a7a, #1b2348);
-  display: grid; place-items: center; color: #fff; font-size: 11px;
+.brand-logo {
+  width: 36px; height: 36px; border-radius: 50%;
+  object-fit: cover; flex: 0 0 36px;
 }
 .nav-group-label {
   color: var(--ink-faint);
   font-size: 12px;
   text-align: right;
-  margin: 16px 6px 8px;
+  margin: 18px 6px 10px;
 }
 .nav-item {
   width: 100%;
@@ -79,20 +78,16 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-direction: row-reverse;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 12px 12px;
   border-radius: 12px;
   font-size: 14px;
   color: var(--ink-soft);
   text-align: right;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
 }
 .nav-item:hover { background: #f6f7fb; }
 .nav-item.active { background: #eef2ff; color: var(--ink); font-weight: 600; }
-.nav-item .num { font-size: 13px; font-weight: 700; }
-.nav-item .num.up { color: var(--green); }
-.nav-item .num.down { color: var(--red); }
 .nav-item .score-pill { color: var(--ink); font-weight: 700; }
 
 .sidebar-footer {
@@ -133,7 +128,19 @@ button { font-family: inherit; cursor: pointer; }
   display: flex; align-items: center; gap: 8px;
   box-shadow: var(--shadow);
 }
-.filter .chev { color: var(--ink-faint); font-size: 10px; }
+.filter .chev { color: var(--ink-faint); font-size: 10px; pointer-events: none; }
+.filter select {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+  text-align: right;
+  direction: rtl;
+  appearance: none;
+}
 .update-tag {
   display: flex; align-items: center; gap: 8px;
   font-size: 12px; color: var(--ink-soft);
@@ -143,9 +150,9 @@ button { font-family: inherit; cursor: pointer; }
 /* ---------------- Headings ---------------- */
 .page-title {
   text-align: right;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
-  margin: 6px 0 18px;
+  margin: 2px 0 14px;
   display: flex; align-items: center; justify-content: flex-start; gap: 12px;
 }
 .page-title .delta { font-size: 14px; font-weight: 700; }
@@ -165,9 +172,9 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--panel);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: 16px;
 }
-.panel-title { text-align: right; font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+.panel-title { text-align: right; font-size: 15px; font-weight: 700; margin: 0 0 4px; }
 .panel-sub { text-align: right; font-size: 12px; color: var(--ink-soft); margin: 0 0 16px; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -178,6 +185,27 @@ button { font-family: inherit; cursor: pointer; }
 .bottom-split > .grid-2 { align-items: stretch; }
 .bottom-split .metric-card { display: flex; flex-direction: column; }
 .insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* פריסת המסך הראשי - שתי עמודות שכל אחת נערמת בנפרד (ללא רווח אפור) */
+.home-cols {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 18px;
+  align-items: start;
+}
+.home-col-main, .home-col-side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.side-focus {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.bottom-row .metric-card { display: flex; flex-direction: column; }
+.insights-panel { display: flex; flex-direction: column; }
+.insights-list { display: flex; flex-direction: column; gap: 12px; }
 
 /* מסך עולם תוכן - עד 3 גרפי מדדים בשורה */
 .metrics-grid {
@@ -207,22 +235,34 @@ button { font-family: inherit; cursor: pointer; }
 .metric-card {
   background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
 }
-.metric-card .head { text-align: right; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+.metric-card .head { text-align: right; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
 .metric-line {
-  display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;
-  padding: 12px 6px; border-bottom: 1px solid var(--line);
+  width: 100%;
+  border: none;
+  background: #f5f7fc;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: flex-start; gap: 12px;
+  padding: 10px 14px; margin-bottom: 8px;
+  cursor: pointer;
+  text-align: right;
 }
-.metric-line:last-child { border-bottom: none; }
-.metric-line .info { text-align: right; }
-.metric-line .info .m { font-size: 14px; font-weight: 600; }
-.metric-line .info .w { font-size: 11px; color: var(--ink-faint); }
-.metric-line .val { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+.metric-line:last-child { margin-bottom: 0; }
+.metric-line:hover { background: #eef1f8; }
+.metric-line .score-box {
+  flex: 0 0 auto;
+  background: none;
+  color: var(--ink);
+  font-size: 18px; font-weight: 800;
+}
+.metric-line .info { text-align: right; flex: 1; }
+.metric-line .info .m { font-size: 12px; font-weight: 700; color: var(--ink); }
+.metric-line .info .w { font-size: 10px; color: var(--ink-faint); margin-top: 2px; }
 
 /* insights */
 .insight {
-  background: #fafbff; border: 1px solid var(--line); border-radius: 14px; padding: 16px; text-align: right;
+  background: #f5f7fc; border: 1px solid var(--line); border-radius: 14px; padding: 14px; text-align: right;
 }
-.insight .t { font-size: 13px; color: var(--ink-soft); margin-bottom: 12px; }
+.insight .t { font-size: 12px; color: var(--ink); line-height: 1.45; margin-bottom: 10px; }
 .insight .more {
   border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 8px 12px;
   display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between;
@@ -235,37 +275,109 @@ button { font-family: inherit; cursor: pointer; }
 
 .chart-caption { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 6px; }
 
-.section-gap { margin-top: 18px; }
+.section-gap { margin-top: 14px; }
 
 .pie-cell { text-align: center; }
 
-.bar-rank { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; gap: 8px; height: 200px; padding: 0 4px; }
-.bar-rank .col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-.bar-rank .col .v { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
-.bar-rank .col .track {
-  position: relative;
-  width: 46px;
+/* מקרא גרף העכביש - פינה שמאלית עליונה */
+.radar-legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink);
+  z-index: 5;
+}
+.radar-legend .rdl-item { display: flex; align-items: center; gap: 6px; }
+.radar-legend .rdl-sw { width: 14px; height: 14px; border-radius: 4px; }
+.radar-legend .rdl-sw.score { background: #4762e5; }
+.radar-legend .rdl-sw.target { background: #8b7fe8; }
+.radar-legend .rdl-vs { color: var(--ink-faint); font-size: 12px; }
+
+/* ---------------- דירוג איכות השירות בחטיבות (קוביות) ---------------- */
+.rank-cubes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: end;
+  gap: 14px;
+  height: 200px;
+  padding: 26px 6px 0;
+}
+.rank-cube {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 100%;
+}
+.rank-cube-frame {
+  position: relative;
+  width: 100%;
+  max-width: 42px;
+  height: 100%;
+  background: #f4f6fc;
+  border-radius: 16px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: #f3f5fb;
-  border-radius: 12px 12px 6px 6px;
 }
-.bar-rank .col .b { width: 100%; border-radius: 12px 12px 6px 6px; background: var(--blue); }
-.bar-rank .col .target-line {
-  position: absolute; left: -3px; right: -3px; height: 0;
-  border-top: 2px dashed var(--blue-soft);
+.rank-cube-bar {
+  width: 100%;
+  background: var(--blue);
+  border-radius: 16px;
+  min-height: 36px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
-.bar-rank .col .lbl { font-size: 11px; color: var(--ink-soft); margin-top: 8px; }
-
-/* כרטיס hover על עמודת הדירוג */
-.bar-hover {
+.rank-cube-score {
   position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  width: 230px;
+  top: -26px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+}
+/* קו יעד מקווקו על הקוביה */
+.rank-cube-target {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  height: 0;
+  border-top: 2px dashed #8aa0e8;
+  z-index: 5;
+}
+.rank-cube-target .rct-label {
+  position: absolute;
+  left: -22px;
+  top: -8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #8aa0e8;
+}
+.rank-cube-name { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+
+.rank-legend {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.rank-legend .rl-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft); }
+.rank-legend .rl-sw { width: 14px; height: 14px; border-radius: 4px; }
+.rank-legend .rl-sw.bar { background: var(--blue); }
+.rank-legend .rl-sw.target { border-top: 2px dashed #8aa0e8; height: 0; width: 16px; border-radius: 0; }
+
+/* כרטיס hover */
+.rank-cube-hover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 50%;
+  transform: translateX(50%);
+  width: 220px;
+  max-width: 220px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -273,37 +385,26 @@ button { font-family: inherit; cursor: pointer; }
   padding: 14px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity .14s ease, transform .14s ease;
-  z-index: 30;
+  transition: opacity .14s ease;
+  z-index: 40;
   pointer-events: none;
 }
-.bar-rank .col:hover .bar-hover {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(-4px);
+.rank-cube-frame:hover .rank-cube-hover { opacity: 1; visibility: visible; }
+.rch-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--line);
 }
-.bar-hover-head {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: baseline;
-  gap: 8px;
-  padding-bottom: 10px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid var(--line);
-}
-.bar-hover-head span:first-child { font-weight: 700; font-size: 14px; }
-.bar-hover-head strong { margin-right: auto; color: var(--blue); font-size: 18px; }
-.bar-hover-head .bh-target { color: var(--ink-faint); font-size: 11px; }
-.bar-hover-row {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  justify-content: space-between;
+.rch-head strong { color: var(--blue); font-size: 18px; }   /* ציון - שמאל */
+.rch-head span { font-weight: 700; font-size: 14px; }       /* שם - ימין */
+.rch-row {
+  display: flex; align-items: center; justify-content: space-between;
   padding: 4px 0;
 }
-.bar-hover-row .bh-name { font-size: 12px; color: var(--ink-soft); }
-.bar-hover-row .bh-val strong { color: var(--blue); font-size: 13px; }
-.bar-hover-row .bh-val small { color: var(--ink-faint); }
+.rch-row .rch-score { color: var(--blue); font-weight: 700; font-size: 13px; }  /* שמאל */
+.rch-row .rch-name { font-size: 12px; color: var(--ink-soft); }                 /* ימין */
+
+
+
 
 .metric-tabs { display: flex; flex-direction: row-reverse; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
 .metric-tab {

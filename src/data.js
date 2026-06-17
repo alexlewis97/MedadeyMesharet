@@ -212,6 +212,13 @@ export function divisionScore(divisionName) {
   return Math.round(rows.reduce((s, x) => s + x.score, 0) / rows.length)
 }
 
+// יעד כללי של חטיבה (ממוצע יעדי המדדים שלה)
+export function divisionTarget(divisionName) {
+  const rows = SCORES_TABLE.filter((x) => x.isDivision && x.divisionName === divisionName)
+  if (!rows.length) return 100
+  return Math.round(rows.reduce((s, x) => s + x.target, 0) / rows.length)
+}
+
 // ציון כללי של עולם תוכן (ממוצע על כל החטיבות, על מדדי העולם)
 export function worldScore(world, divisionFilter) {
   const rows = SCORES_TABLE.filter(

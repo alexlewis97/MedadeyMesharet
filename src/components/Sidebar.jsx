@@ -1,13 +1,13 @@
 import React from 'react'
-import { CONTENT_WORLDS, worldScore, worldTarget, overallScore } from '../data.js'
+import { CONTENT_WORLDS, worldScore, overallScore } from '../data.js'
 
 export default function Sidebar({ active, onSelect }) {
   const overall = overallScore()
   return (
     <aside className="sidebar">
       <div className="brand">
+        <img className="brand-logo" src="/bina.jpg" alt="אגף התקשוב" />
         איכות השירות
-        <span className="logo">לוגו</span>
       </div>
 
       <div className="nav-group-label">ראשי</div>
@@ -15,23 +15,19 @@ export default function Sidebar({ active, onSelect }) {
         className={'nav-item' + (active === '__home' ? ' active' : '')}
         onClick={() => onSelect('__home')}
       >
-        <span className="num score-pill">{overall}</span>
         <span>תמונת מצב</span>
+        <span className="num score-pill">{overall}</span>
       </button>
 
       <div className="nav-group-label">תחומים</div>
       {CONTENT_WORLDS.map((w) => {
         const s = worldScore(w)
-        const delta = s - worldTarget(w)
         return (
           <button
             key={w}
             className={'nav-item' + (active === w ? ' active' : '')}
             onClick={() => onSelect(w)}
           >
-            <span className={'num ' + (delta >= 0 ? 'up' : 'down')}>
-              {Math.abs(delta)} {delta >= 0 ? '↑' : '↓'}
-            </span>
             <span>{w}</span>
             <span className="score-pill">{s}</span>
           </button>
@@ -39,9 +35,9 @@ export default function Sidebar({ active, onSelect }) {
       })}
 
       <div className="sidebar-footer">
-        <span>פותח ע"י יחידת שחר</span>
         <img className="footer-logo" src="/shahar.jpg" alt="יחידת שחר" />
-        <img className="footer-logo" src="/bina.jpg" alt="בינה" />
+        <img className="footer-logo" src="/bina.jpg" alt="חטיבת בינה" />
+        <span>פותח ע"י יחידת שחר וחטיבת בינה</span>
       </div>
     </aside>
   )
