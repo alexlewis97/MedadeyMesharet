@@ -37,7 +37,7 @@ export default function Sidebar({ active, onSelect }) {
       <div className="sidebar-footer">
         <img className="footer-logo" src="/shahar.jpg" alt="יחידת שחר" />
         <img className="footer-logo" src="/bina.jpg" alt="חטיבת בינה" />
-        <span>פותח ע"י יחידת שחר וחטיבת בינה</span>
+        <span>פותח ע"י יחידת שחר</span>
       </div>
     </aside>
   )
