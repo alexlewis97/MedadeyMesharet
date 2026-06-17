@@ -327,6 +327,53 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ---------------- World screen metric panels ---------------- */
 .metric-panel { display: flex; flex-direction: column; }
+.metric-head { min-height: 64px; }
+.metric-score { color: var(--blue); font-weight: 700; font-size: 14px; }
+.filter-flag {
+  margin-top: 6px;
+  display: inline-block;
+  background: #fff4e5;
+  color: #c97a16;
+  border: 1px solid #f5d9ad;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+.metric-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 230px;
+}
+
+/* בר מקווקו */
+.dashed-bar { width: 100%; padding: 20px 4px; }
+.dashed-bar-track {
+  width: 100%;
+  height: 34px;
+  border: 2px dashed var(--blue-soft);
+  border-radius: 12px;
+  background: #f6f8ff;
+  padding: 3px;
+}
+.dashed-bar-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 9px;
+  min-width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width .3s ease;
+}
+.dashed-bar-pct { color: #fff; font-weight: 700; font-size: 13px; }
+.dashed-bar-count { text-align: center; margin-top: 12px; font-size: 13px; color: var(--ink-soft); }
+
+/* תצוגת אחוז בלבד */
+.percent-only { text-align: center; }
+.percent-only-num { font-size: 56px; font-weight: 800; color: var(--blue); line-height: 1; }
+.percent-only-note { font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
 
 /* מרכז של דונאט / מד KPI */
 .donut-center {

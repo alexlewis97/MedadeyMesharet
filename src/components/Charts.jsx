@@ -166,7 +166,7 @@ function RadarTip({ active, payload, label }) {
   )
 }
 
-export function CategoryBarChart({ categories, counts, height = 220 }) {
+export function CategoryBarChart({ categories, counts, height = 220, suffix = '' }) {
   const data = categories.map((c, i) => ({ name: c, value: counts[i] }))
   return (
     <div style={{ width: '100%', height }}>
@@ -174,8 +174,8 @@ export function CategoryBarChart({ categories, counts, height = 220 }) {
         <BarChart data={data} margin={{ top: 20, right: 8, left: 8, bottom: 4 }}>
           <XAxis dataKey="name" reversed tick={{ fontSize: 11, fill: '#8b90a9' }} axisLine={false} tickLine={false} />
           <YAxis hide />
-          <Tooltip content={<BarTip />} cursor={{ fill: 'rgba(47,107,255,0.06)' }} />
-          <Bar dataKey="value" radius={[10, 10, 4, 4]} label={{ position: 'top', fontSize: 12, fill: '#1f2547' }}>
+          <Tooltip content={<BarTip suffix={suffix} />} cursor={{ fill: 'rgba(47,107,255,0.06)' }} />
+          <Bar dataKey="value" radius={[10, 10, 4, 4]} label={{ position: 'top', fontSize: 12, fill: '#1f2547', formatter: (v) => `${v}${suffix}` }}>
             {data.map((_, i) => (
               <Cell key={i} fill={i === maxIndex(counts) ? '#2f6bff' : '#9db9ff'} />
             ))}
@@ -192,11 +192,78 @@ function maxIndex(arr) {
   return mi
 }
 
-function BarTip({ active, payload, label }) {
+function BarTip({ active, payload, label, suffix = '' }) {
   if (!active || !payload || !payload.length) return null
   return (
     <div className="tooltip-box">
-      {label}: {payload[0].value}
+      {label}: {payload[0].value}{suffix}
+    </div>
+  )
+}
+
+// גרף עמודות לפי חטיבה - ערך (אחוז או כמות) לכל חטיבה
+export function DivisionBarChart({ data, valueUnit = 'percent', height = 210 }) {
+  // data: [{ name, value }]
+  const max = Math.max(...data.map((d) => d.value), valueUnit === 'percent' ? 100 : 1)
+  return (
+    <div style={{ width: '100%', height }}>
+      <ResponsiveContainer>
+        <BarChart data={data} margin={{ top: 24, right: 8, left: 8, bottom: 4 }} barCategoryGap="25%">
+          <XAxis dataKey="name" reversed tick={{ fontSize: 11, fill: '#8b90a9' }} axisLine={false} tickLine={false} />
+          <YAxis hide domain={[0, max]} />
+          <Tooltip
+            content={({ active, payload, label }) =>
+              active && payload && payload.length ? (
+                <div className="tooltip-box">
+                  {label}: {payload[0].value}{valueUnit === 'percent' ? '%' : ''}
+                </div>
+              ) : null
+            }
+            cursor={{ fill: 'rgba(47,107,255,0.06)' }}
+          />
+          <Bar
+            dataKey="value"
+            radius={[10, 10, 4, 4]}
+            label={{
+              position: 'top',
+              fontSize: 12,
+              fontWeight: 700,
+              fill: '#1f2547',
+              formatter: (v) => (valueUnit === 'percent' ? `${v}%` : v),
+            }}
+          >
+            {data.map((_, i) => (
+              <Cell key={i} fill={i === maxIndex(data.map((d) => d.value)) ? '#2f6bff' : '#9db9ff'} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+// בר מקווקו - אחוז + כמות מוחלטת
+export function DashedBar({ percent, count, countUnit }) {
+  return (
+    <div className="dashed-bar">
+      <div className="dashed-bar-track">
+        <div className="dashed-bar-fill" style={{ width: `${percent}%` }}>
+          <span className="dashed-bar-pct">{percent}%</span>
+        </div>
+      </div>
+      <div className="dashed-bar-count">
+        {count.toLocaleString()} {countUnit}
+      </div>
+    </div>
+  )
+}
+
+// תצוגת אחוז בלבד (ללא גרף)
+export function PercentOnly({ percent, note }) {
+  return (
+    <div className="percent-only">
+      <div className="percent-only-num">{percent}%</div>
+      {note && <div className="percent-only-note">{note}</div>}
     </div>
   )
 }
