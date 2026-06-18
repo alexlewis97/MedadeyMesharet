@@ -25,7 +25,7 @@ export default function App() {
     <div className="app">
       <Sidebar active={activeNav} onSelect={selectNav} />
       <main className="main">
-        <TopBar filters={filters} onChange={setFilters} />
+        <TopBar filters={filters} onChange={setFilters} periodDisabled={view.type === 'home'} />
         <div className="content-area">
           {view.type === 'home' && (
             <HomeScreen onOpenWorld={openWorld} division={filters.division} />

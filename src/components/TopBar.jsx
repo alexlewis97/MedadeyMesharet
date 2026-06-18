@@ -3,7 +3,7 @@ import { META, DIVISIONS } from '../data.js'
 
 const PERIODS = ['רבעון אחרון', 'רבעון קודם', 'שנה נוכחית', 'שנה קודמת']
 
-export default function TopBar({ filters, onChange }) {
+export default function TopBar({ filters, onChange, periodDisabled }) {
   return (
     <div className="topbar">
       <div className="filters">
@@ -17,6 +17,7 @@ export default function TopBar({ filters, onChange }) {
           value={filters.period}
           options={PERIODS}
           active={filters.period !== 'רבעון אחרון'}
+          disabled={periodDisabled}
           onChange={(v) => onChange({ ...filters, period: v })}
         />
       </div>
@@ -28,7 +29,7 @@ export default function TopBar({ filters, onChange }) {
   )
 }
 
-function FilterSelect({ value, options, active, onChange }) {
+function FilterSelect({ value, options, active, disabled, onChange }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -43,14 +44,14 @@ function FilterSelect({ value, options, active, onChange }) {
   }, [open])
 
   return (
-    <div className={'filter' + (active ? ' active' : '')} ref={ref}>
-      <button className="filter-btn" onClick={() => setOpen((o) => !o)}>
+    <div className={'filter' + (active ? ' active' : '') + (disabled ? ' disabled' : '')} ref={ref}>
+      <button className="filter-btn" onClick={() => !disabled && setOpen((o) => !o)} disabled={disabled}>
         <span className="filter-value">{value}</span>
         <svg className={'chev' + (open ? ' rot' : '')} width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      {open && (
+      {open && !disabled && (
         <div className="filter-menu">
           {options.map((o) => (
             <button

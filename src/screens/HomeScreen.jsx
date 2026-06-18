@@ -86,15 +86,15 @@ export default function HomeScreen({ onOpenWorld, division }) {
                     </div>
                     <div className="rank-cube-hover">
                       <div className="rch-head">
-                        <strong>{r.score}</strong>
                         <span>{r.name}</span>
+                        <strong>{r.score}</strong>
                       </div>
                       {CONTENT_WORLDS.map((w) => (
                         <div className="rch-row" key={w}>
+                          <span className="rch-name">{w}</span>
                           <span className="rch-score">
                             {division ? worldScore(w, division) : worldScore(w, r.name)}
                           </span>
-                          <span className="rch-name">{w}</span>
                         </div>
                       ))}
                     </div>

@@ -32,7 +32,7 @@ export function DonutChart({ data, size = 170, centerTop, centerBottom }) {
               <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
             ))}
           </Pie>
-          <Tooltip content={<PieTip total={total} />} />
+          <Tooltip content={<PieTip total={total} />} wrapperStyle={{ direction: 'rtl' }} />
         </PieChart>
       </ResponsiveContainer>
       {(centerTop || centerBottom) && (
@@ -66,7 +66,7 @@ export function PieChartSimple({ data, size = 170 }) {
               <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
             ))}
           </Pie>
-          <Tooltip content={<PieTip total={total} />} />
+          <Tooltip content={<PieTip total={total} />} wrapperStyle={{ direction: 'rtl' }} />
         </PieChart>
       </ResponsiveContainer>
     </div>
@@ -116,7 +116,7 @@ function PieTip({ active, payload, total }) {
   )
 }
 
-// תווית ציר עכביש - שם עולם התוכן + שתי תוויות (ציון / יעד) מתחתיו, בסגנון הפיגמה
+// תווית ציר עכביש - שם עולם התוכן + ציון/יעד. בצדדים: בשורה אחת מקבילה לקצה
 function WorldTick({ x, y, payload, data, cx, cy }) {
   const item = data.find((d) => d.axis === payload.value)
   const score = item ? item.score : 0
@@ -125,45 +125,34 @@ function WorldTick({ x, y, payload, data, cx, cy }) {
   // הסטה רדיאלית החוצה מהמרכז כדי שהתוויות לא יתנגשו עם הפוליגון
   const dx = x - cx
   const dy = y - cy
-  const len = Math.sqrt(dx * dx + dy * dy) || 1
-  const PUSH = 54
-  const tx = x + (dx / len) * PUSH
-  const ty = y + (dy / len) * PUSH
-
   const isMiddle = Math.abs(dx) < 30
-  const anchor = isMiddle ? 'middle' : tx > cx ? 'start' : 'end'
-  const badgeW = 34
-  const badgeH = 20
-  const gap = 6
-  const totalW = badgeW * 2 + gap
-  let startX
-  if (anchor === 'middle') startX = tx - totalW / 2
-  else if (anchor === 'start') startX = tx
-  else startX = tx - totalW
+  // לצדדים דרושה הסטה אופקית גדולה יותר, לעליון/תחתון מספיק מעט
+  const PUSH = isMiddle ? 16 : 80
+  const tx = isMiddle ? x : x + (dx > 0 ? PUSH : -PUSH)
+  const ty = isMiddle ? y + (dy < 0 ? -PUSH : PUSH) : y
 
-  // האם התווית בחצי העליון - נציב את התגיות מעל השם
-  const labelAbove = ty < cy
-  const nameY = labelAbove ? ty - 6 : ty
-  const badgeY = labelAbove ? ty - badgeH - 22 : ty + 8
+  const badgeW = 32
+  const badgeH = 21
+  const gap = 6
+  const badgesW = badgeW * 2 + gap
+
+  // כל התוויות באותו מבנה: שם למעלה, שתי תגיות (ציון/יעד) ממורכזות מתחתיו
+  const nameY = ty - 10
+  const badgeY = ty + 4
+  const badgesX = tx - badgesW / 2
 
   return (
     <g>
-      <text x={tx} y={nameY} textAnchor={anchor} fill="#3a3f5c" fontSize="13" fontWeight="700">
+      <text x={tx} y={nameY} textAnchor="middle" fill="#3a3f5c" fontSize="13" fontWeight="700">
         {payload.value}
       </text>
-      {/* תווית ציון - בצבע הציון (כחול) */}
-      <g transform={`translate(${startX}, ${badgeY})`}>
+      <g transform={`translate(${badgesX}, ${badgeY})`}>
         <rect width={badgeW} height={badgeH} rx="6" fill="#e8edff" />
-        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#4762e5" fontSize="12" fontWeight="700">
-          {score}
-        </text>
+        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#4762e5" fontSize="12" fontWeight="700">{score}</text>
       </g>
-      {/* תווית יעד - בצבע היעד (סגול) */}
-      <g transform={`translate(${startX + badgeW + gap}, ${badgeY})`}>
+      <g transform={`translate(${badgesX + badgeW + gap}, ${badgeY})`}>
         <rect width={badgeW} height={badgeH} rx="6" fill="#ece9fb" />
-        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#8b7fe8" fontSize="12" fontWeight="700">
-          {target}
-        </text>
+        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#8b7fe8" fontSize="12" fontWeight="700">{target}</text>
       </g>
     </g>
   )
@@ -178,14 +167,14 @@ function SpiderLegend() {
   )
 }
 
-export function SpiderChart({ data, height = 380 }) {
+export function SpiderChart({ data, height = 345 }) {
   // data: [{ axis, score, target }]
   return (
     <div style={{ position: 'relative' }}>
       <SpiderLegend />
       <div style={{ width: '100%', height }}>
         <ResponsiveContainer>
-          <RadarChart data={data} outerRadius="64%" margin={{ top: 80, right: 100, bottom: 70, left: 100 }}>
+          <RadarChart data={data} outerRadius="78%" margin={{ top: 70, right: 130, bottom: 70, left: 130 }}>
             <PolarGrid stroke="#d4d9e6" strokeDasharray="5 5" gridType="polygon" />
             <PolarAngleAxis dataKey="axis" tick={<WorldTick data={data} />} />
             <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
@@ -193,7 +182,7 @@ export function SpiderChart({ data, height = 380 }) {
             <Radar name="יעד" dataKey="target" stroke="#8b7fe8" strokeWidth={2} fill="#8b7fe8" fillOpacity={0.12} />
             {/* ציון - כחול */}
             <Radar name="ציון" dataKey="score" stroke="#4762e5" strokeWidth={2.5} fill="#4762e5" fillOpacity={0.28} />
-            <Tooltip content={<RadarTip />} />
+            <Tooltip content={<RadarTip />} wrapperStyle={{ direction: 'rtl' }} />
           </RadarChart>
         </ResponsiveContainer>
       </div>
@@ -222,7 +211,7 @@ export function CategoryBarChart({ categories, counts, height = 220, suffix = ''
         <BarChart data={data} margin={{ top: 20, right: 8, left: 8, bottom: 4 }}>
           <XAxis dataKey="name" reversed tick={{ fontSize: 11, fill: '#8b90a9' }} axisLine={false} tickLine={false} />
           <YAxis hide />
-          <Tooltip content={<BarTip suffix={suffix} />} cursor={{ fill: 'rgba(47,107,255,0.06)' }} />
+          <Tooltip content={<BarTip suffix={suffix} />} wrapperStyle={{ direction: 'rtl' }} cursor={{ fill: 'rgba(47,107,255,0.06)' }} />
           <Bar dataKey="value" radius={[10, 10, 4, 4]} label={{ position: 'top', fontSize: 12, fill: '#1f2547', formatter: (v) => `${v}${suffix}` }}>
             {data.map((_, i) => (
               <Cell key={i} fill="#2f6bff" />
@@ -261,6 +250,7 @@ export function DivisionBarChart({ data, valueUnit = 'percent', height = 210 }) 
                 </div>
               ) : null
             }
+            wrapperStyle={{ direction: 'rtl' }}
             cursor={{ fill: 'rgba(47,107,255,0.06)' }}
           />
           <Bar

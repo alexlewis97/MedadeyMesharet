@@ -1,5 +1,5 @@
 import React from 'react'
-import { worldMetrics, worldScore } from '../data.js'
+import { worldMetrics } from '../data.js'
 import {
   DonutChart, CategoryBarChart, DivisionBarChart, DashedBar, PercentOnly, PALETTE,
 } from '../components/Charts.jsx'
@@ -7,27 +7,39 @@ import {
 // מסך עולם תוכן - תצוגת תחקור עומק לכל המדדים בתחום
 export default function WorldScreen({ world, division, onDivisionChange }) {
   const metrics = worldMetrics(world, division)
-  const score = worldScore(world)
+  const SMALL = ['percentOnly', 'dashedBar']
+  const smallMetrics = metrics.filter((m) => SMALL.includes(m.graphType))
+  const bigMetrics = metrics.filter((m) => !SMALL.includes(m.graphType))
 
   return (
     <div>
-      <h1 className="page-title">
-        <span>{world}</span>
-        {score}
-      </h1>
-
-      <div className="breadcrumb">
-        <button onClick={() => onDivisionChange(null)}>כל החטיבות</button>
-        {division && (
-          <>
-            <span>›</span>
-            <span>{division} (יחידות)</span>
-          </>
-        )}
+      <div className="world-title-row">
+        <h1 className="page-title">
+          <span>{world}</span>
+        </h1>
+        <div className="breadcrumb">
+          <button onClick={() => onDivisionChange(null)}>כל החטיבות</button>
+          {division && (
+            <>
+              <span>›</span>
+              <span>{division} (יחידות)</span>
+            </>
+          )}
+        </div>
       </div>
 
+      {/* שורה עליונה - גרפים קטנים, בחצי גודל */}
+      {smallMetrics.length > 0 && (
+        <div className="metrics-grid-small">
+          {smallMetrics.map((m) => (
+            <MetricPanel key={m.metric} m={m} division={division} onDrill={onDivisionChange} small />
+          ))}
+        </div>
+      )}
+
+      {/* שורות הגרפים הגדולים */}
       <div className="metrics-grid">
-        {metrics.map((m) => (
+        {bigMetrics.map((m) => (
           <MetricPanel key={m.metric} m={m} division={division} onDrill={onDivisionChange} />
         ))}
       </div>
@@ -35,9 +47,9 @@ export default function WorldScreen({ world, division, onDivisionChange }) {
   )
 }
 
-function MetricPanel({ m, division, onDrill }) {
+function MetricPanel({ m, division, onDrill, small }) {
   return (
-    <div className="panel metric-panel">
+    <div className={'panel metric-panel' + (small ? ' metric-panel-small' : '')}>
       <div className="metric-head">
         <h3 className="panel-title">{m.metric}</h3>
         <p className="panel-sub">{m.note}</p>
@@ -64,7 +76,7 @@ function MetricPanel({ m, division, onDrill }) {
           ))}
           <div className="score-strip-cell total">
             <div className="ss-score">{m.totalScore}</div>
-            <div className="ss-name">סה"כ</div>
+            <div className="ss-name">ציון אגפי</div>
           </div>
         </div>
       )}

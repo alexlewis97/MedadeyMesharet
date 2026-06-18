@@ -47,7 +47,7 @@ button { font-family: inherit; cursor: pointer; }
 .content-area {
   flex: 1;
   margin: 4px 16px 16px 16px;
-  padding: 22px 24px 40px;
+  padding: 32px;
   background-color: #fafafa;
   background-image: radial-gradient(#e3e6ee 1px, transparent 1px);
   background-size: 22px 22px;
@@ -158,6 +158,8 @@ button { font-family: inherit; cursor: pointer; }
 .filter.active { background: #f0f3ff; border-color: #c9d6ff; }
 .filter.active .filter-value { font-weight: 700; }
 .filter.active .chev { color: var(--blue); }
+.filter.disabled { opacity: 0.45; }
+.filter.disabled .filter-btn { cursor: not-allowed; }
 
 /* תפריט נפתח */
 .filter-menu {
@@ -194,8 +196,8 @@ button { font-family: inherit; cursor: pointer; }
 /* ---------------- Headings ---------------- */
 .page-title {
   text-align: right;
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 23px;
+  font-weight: 600;
   margin: 2px 0 14px;
   display: flex; align-items: center; justify-content: flex-start; gap: 12px;
 }
@@ -207,6 +209,14 @@ button { font-family: inherit; cursor: pointer; }
   display: flex; flex-direction: row-reverse; gap: 6px;
   font-size: 13px; color: var(--ink-soft); margin-bottom: 14px;
 }
+.world-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.world-title-row .page-title { margin: 0; }
+.world-title-row .breadcrumb { margin: 0; }
 .breadcrumb button {
   border: none; background: none; color: var(--blue); font-size: 13px; padding: 0;
 }
@@ -215,10 +225,11 @@ button { font-family: inherit; cursor: pointer; }
 .panel {
   background: var(--panel);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1.5rem;
+  box-shadow: none;
+  border: 1px solid var(--line);
+  padding: 28px;
 }
-.panel-title { text-align: right; font-size: 15px; font-weight: 500; margin: 0 0 4px; }
+.panel-title { text-align: right; font-size: 18px; font-weight: 600; margin: 0 0 4px; }
 .panel-sub { text-align: right; font-size: 12px; color: var(--ink-soft); margin: 0 0 16px; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -257,12 +268,21 @@ button { font-family: inherit; cursor: pointer; }
   grid-template-columns: repeat(2, 1fr);
   gap: 48px;
 }
+
+/* גרפים קטנים - חצי רוחב מהגדולים (כלומר רבע שורה), בשורה נפרדת למעלה */
+.metrics-grid-small {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px;
+  margin-bottom: 48px;
+}
+.metric-panel-small .metric-body { min-height: 110px; }
 .row { display: flex; gap: 18px; }
 
 /* KPI cards */
 .kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 540px; margin-right: auto; margin-bottom: 18px; }
 .kpi {
-  background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px;
+  background: var(--panel); border-radius: var(--radius); box-shadow: none; border: 1px solid var(--line); padding: 18px 20px;
   text-align: right;
 }
 .kpi h4 { margin: 0 0 4px; font-size: 15px; font-weight: 700; }
@@ -277,7 +297,7 @@ button { font-family: inherit; cursor: pointer; }
 
 /* metric list (focus) */
 .metric-card {
-  background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
+  background: var(--panel); border-radius: var(--radius); box-shadow: none; border: 1px solid var(--line); padding: 16px;
 }
 .metric-card .head { text-align: right; font-size: 14px; font-weight: 500; margin-bottom: 10px; }
 .metric-line {
@@ -347,7 +367,7 @@ button { font-family: inherit; cursor: pointer; }
   grid-template-columns: repeat(5, 1fr);
   align-items: end;
   gap: 14px;
-  height: 200px;
+  height: 288px;
   padding: 26px 6px 0;
 }
 .rank-cube {
@@ -437,6 +457,8 @@ button { font-family: inherit; cursor: pointer; }
   transition: opacity .14s ease;
   z-index: 40;
   pointer-events: none;
+  direction: rtl;
+  text-align: right;
 }
 .rank-cube-frame:hover .rank-cube-hover { opacity: 1; visibility: visible; }
 .rch-head {
