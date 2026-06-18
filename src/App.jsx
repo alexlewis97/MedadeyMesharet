@@ -8,7 +8,7 @@ export default function App() {
   // view: { type: 'home' | 'world', world }
   const [view, setView] = useState({ type: 'home' })
   // סינון עליון שמשפיע על כל הדף
-  const [filters, setFilters] = useState({ division: null, period: 'רבעון אחרון', rank: 'כל הדרגות' })
+  const [filters, setFilters] = useState({ division: null, period: 'רבעון אחרון' })
 
   const activeNav = view.type === 'home' ? '__home' : view.world
 
@@ -26,12 +26,18 @@ export default function App() {
       <Sidebar active={activeNav} onSelect={selectNav} />
       <main className="main">
         <TopBar filters={filters} onChange={setFilters} />
-        {view.type === 'home' && (
-          <HomeScreen onOpenWorld={openWorld} division={filters.division} />
-        )}
-        {view.type === 'world' && (
-          <WorldScreen world={view.world} division={filters.division} />
-        )}
+        <div className="content-area">
+          {view.type === 'home' && (
+            <HomeScreen onOpenWorld={openWorld} division={filters.division} />
+          )}
+          {view.type === 'world' && (
+            <WorldScreen
+              world={view.world}
+              division={filters.division}
+              onDivisionChange={(d) => setFilters({ ...filters, division: d })}
+            />
+          )}
+        </div>
       </main>
     </div>
   )

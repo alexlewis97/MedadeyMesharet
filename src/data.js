@@ -49,9 +49,9 @@ export const METRIC_DEFS = [
     note: 'הסקר בוצע בתאריך 17/02, 84% ממשרתי הקבע השיבו',
     categories: ['במידה רבה מאוד', 'במידה רבה', 'במידה בינונית', 'במידה מועטה', 'במידה מועטה מאוד'] },
   { world: 'סביבת עבודה', metric: 'תקלות בינוי חורגות מזמן טיפול', focus: 'negative', period: 'quarterly', graphType: 'percentOnly',
-    note: 'ממתינות יותר מ-30 ימים', respondsToFilter: false, categories: [] },
+    note: 'ממתינות יותר מ-30 ימים', categories: [] },
   { world: 'סביבת עבודה', metric: 'בקשות הלנה חורגות', focus: 'negative', period: 'quarterly', graphType: 'percentOnly',
-    note: 'ממתינות יותר מ-30 ימים', respondsToFilter: false, categories: [] },
+    note: 'ממתינות יותר מ-30 ימים', categories: [] },
   { world: 'סביבת עבודה', metric: 'זמן אספקה של רכב אישי', focus: 'positive', period: 'quarterly', graphType: 'dashedBar',
     note: 'אנשי קבע שקיבלו רכב תוך 30 ימים', valueUnit: 'percent', countUnit: 'אנשי קבע', categories: [] },
 
@@ -349,10 +349,10 @@ export function worldMetrics(world, divisionFilter) {
     const scores = activeFilter
       ? SCORES_TABLE.filter(
           (x) => !x.isDivision && x.world === world && x.metric === def.metric && x.divisionName === activeFilter
-        ).map((x) => ({ name: shortName(x.unitName), score: x.score }))
+        ).map((x) => ({ name: shortName(x.unitName), fullName: x.unitName, isUnit: true, score: x.score }))
       : SCORES_TABLE.filter(
           (x) => x.isDivision && x.world === world && x.metric === def.metric
-        ).map((x) => ({ name: shortName(x.divisionName), score: x.score }))
+        ).map((x) => ({ name: shortName(x.divisionName), fullName: x.divisionName, isUnit: false, score: x.score }))
 
     const totalScore = Math.round(
       scores.reduce((s, x) => s + x.score, 0) / (scores.length || 1)

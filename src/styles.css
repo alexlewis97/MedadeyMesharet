@@ -37,14 +37,27 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .main {
-  padding: 16px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
   overflow-x: hidden;
+}
+
+/* אזור התוכן - רקע fafafa עם נקודות כמו מחברת מנוקדת */
+.content-area {
+  flex: 1;
+  margin: 4px 16px 16px 16px;
+  padding: 22px 24px 40px;
+  background-color: #fafafa;
+  background-image: radial-gradient(#e3e6ee 1px, transparent 1px);
+  background-size: 22px 22px;
+  border-radius: 20px;
 }
 
 /* ---------------- Sidebar (right) ---------------- */
 .sidebar {
   background: var(--panel);
-  border-left: 1px solid var(--line);
+  border-left: none;
   padding: 24px 18px;
   position: sticky;
   top: 0;
@@ -57,8 +70,8 @@ button { font-family: inherit; cursor: pointer; }
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
-  font-weight: 800;
-  font-size: 18px;
+  font-weight: 500;
+  font-size: 15px;
   margin-bottom: 28px;
 }
 .brand-logo {
@@ -88,7 +101,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .nav-item:hover { background: #f6f7fb; }
 .nav-item.active { background: #eef2ff; color: var(--ink); font-weight: 600; }
-.nav-item .score-pill { color: var(--ink); font-weight: 700; }
+.nav-item .score-pill { color: inherit; font-weight: 500; }
 
 .sidebar-footer {
   margin-top: auto;
@@ -115,32 +128,63 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  background: #ffffff;
+  padding: 16px 24px;
 }
-.filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.filters { display: flex; gap: 12px; flex-wrap: wrap; }
 .filter {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 30px;
-  padding: 9px 16px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  display: flex; align-items: center; gap: 8px;
-  box-shadow: var(--shadow);
+  position: relative;
+  background: #fafafa;
+  border: 1px solid #ededf2;
+  border-radius: 40px;
+  min-width: 170px;
+  transition: border-color .15s ease, background .15s ease;
 }
-.filter .chev { color: var(--ink-faint); font-size: 10px; pointer-events: none; }
-.filter select {
+.filter:hover { border-color: #d8dae2; }
+.filter-btn {
+  width: 100%;
   border: none;
   background: transparent;
-  font-family: inherit;
-  font-size: 13px;
+  padding: 8px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-size: 14px;
   color: var(--ink);
   cursor: pointer;
-  outline: none;
-  text-align: right;
-  direction: rtl;
-  appearance: none;
 }
+.filter-value { flex: 1; text-align: right; }
+.filter .chev { color: var(--ink-soft); flex: 0 0 auto; transition: transform .18s ease; }
+.filter .chev.rot { transform: rotate(180deg); }
+/* כאשר קיים סינון פעיל - בולד */
+.filter.active { background: #f0f3ff; border-color: #c9d6ff; }
+.filter.active .filter-value { font-weight: 700; }
+.filter.active .chev { color: var(--blue); }
+
+/* תפריט נפתח */
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(31, 37, 71, 0.14);
+  padding: 6px;
+  z-index: 50;
+}
+.filter-option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 14px;
+  color: var(--ink);
+  text-align: right;
+  cursor: pointer;
+}
+.filter-option:hover { background: #f4f6fc; }
+.filter-option.selected { background: #f0f3ff; color: var(--blue); font-weight: 700; }
 .update-tag {
   display: flex; align-items: center; gap: 8px;
   font-size: 12px; color: var(--ink-soft);
@@ -150,8 +194,8 @@ button { font-family: inherit; cursor: pointer; }
 /* ---------------- Headings ---------------- */
 .page-title {
   text-align: right;
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 500;
   margin: 2px 0 14px;
   display: flex; align-items: center; justify-content: flex-start; gap: 12px;
 }
@@ -172,9 +216,9 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--panel);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 16px;
+  padding: 1.5rem;
 }
-.panel-title { text-align: right; font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+.panel-title { text-align: right; font-size: 15px; font-weight: 500; margin: 0 0 4px; }
 .panel-sub { text-align: right; font-size: 12px; color: var(--ink-soft); margin: 0 0 16px; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -189,19 +233,19 @@ button { font-family: inherit; cursor: pointer; }
 /* פריסת המסך הראשי - שתי עמודות שכל אחת נערמת בנפרד (ללא רווח אפור) */
 .home-cols {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 18px;
+  grid-template-columns: 11fr 9fr;
+  gap: 40px;
   align-items: start;
 }
 .home-col-main, .home-col-side {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 40px;
 }
 .side-focus {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 40px;
 }
 .bottom-row .metric-card { display: flex; flex-direction: column; }
 .insights-panel { display: flex; flex-direction: column; }
@@ -211,7 +255,7 @@ button { font-family: inherit; cursor: pointer; }
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  gap: 48px;
 }
 .row { display: flex; gap: 18px; }
 
@@ -235,7 +279,7 @@ button { font-family: inherit; cursor: pointer; }
 .metric-card {
   background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
 }
-.metric-card .head { text-align: right; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.metric-card .head { text-align: right; font-size: 14px; font-weight: 500; margin-bottom: 10px; }
 .metric-line {
   width: 100%;
   border: none;
@@ -255,7 +299,7 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 18px; font-weight: 800;
 }
 .metric-line .info { text-align: right; flex: 1; }
-.metric-line .info .m { font-size: 12px; font-weight: 700; color: var(--ink); }
+.metric-line .info .m { font-size: 12px; font-weight: 500; color: var(--ink); }
 .metric-line .info .w { font-size: 10px; color: var(--ink-faint); margin-top: 2px; }
 
 /* insights */
@@ -359,11 +403,16 @@ button { font-family: inherit; cursor: pointer; }
 }
 .rank-cube-name { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
 
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.panel-header-row .panel-title { margin: 0; }
 .rank-legend {
   display: flex;
   gap: 18px;
-  justify-content: center;
-  margin-top: 14px;
 }
 .rank-legend .rl-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft); }
 .rank-legend .rl-sw { width: 14px; height: 14px; border-radius: 4px; }
@@ -448,28 +497,30 @@ button { font-family: inherit; cursor: pointer; }
   min-height: 230px;
 }
 
-/* בר מקווקו */
-.dashed-bar { width: 100%; padding: 20px 4px; }
-.dashed-bar-track {
-  width: 100%;
-  height: 34px;
-  border: 2px dashed var(--blue-soft);
-  border-radius: 12px;
-  background: #f6f8ff;
-  padding: 3px;
-}
-.dashed-bar-fill {
-  height: 100%;
-  background: var(--blue);
-  border-radius: 9px;
-  min-width: 42px;
+/* מד אחוז בסגמנטים */
+.seg-bar { width: 100%; padding: 16px 4px; }
+.seg-bar-head {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: width .3s ease;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
 }
-.dashed-bar-pct { color: #fff; font-weight: 700; font-size: 13px; }
-.dashed-bar-count { text-align: center; margin-top: 12px; font-size: 13px; color: var(--ink-soft); }
+.seg-bar-pct { font-size: 44px; font-weight: 800; color: var(--ink); line-height: 1; }
+.seg-bar-count { font-size: 15px; color: var(--ink-soft); }
+.seg-bar-track {
+  display: flex;
+  direction: ltr;
+  gap: 8px;
+}
+.seg-pill {
+  flex: 1;
+  height: 14px;
+  border-radius: 8px;
+  background: #e2e6f0;
+  transition: background .25s ease;
+}
+.seg-pill.on { background: var(--blue); }
 
 /* תצוגת אחוז בלבד */
 .percent-only { text-align: center; }
@@ -494,28 +545,44 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 40px;
   margin: 8px 0 14px;
+  padding: 0 10px;
 }
 
-.metric-legend { display: flex; flex-direction: column; gap: 8px; min-width: 130px; }
-.ml-row { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
-.ml-pct { font-size: 13px; font-weight: 700; color: var(--ink); width: 38px; text-align: left; }
-.ml-name { font-size: 12px; color: var(--ink-soft); flex: 1; text-align: right; }
-.ml-sw { width: 12px; height: 12px; border-radius: 4px; flex: 0 0 12px; }
+.metric-legend { display: flex; flex-direction: column; gap: 12px; min-width: 150px; }
+.ml-row { display: flex; align-items: center; gap: 10px; }
+.ml-pct { font-size: 13px; font-weight: 700; color: var(--ink); width: 40px; text-align: left; }
+.ml-name { font-size: 13px; color: var(--ink-soft); flex: 1; text-align: right; }
+.ml-sw { width: 13px; height: 13px; border-radius: 4px; flex: 0 0 13px; }
 
 /* רצועת ציונים בתחתית כל גרף */
 .score-strip {
   display: flex;
-  flex-direction: row-reverse;
   align-items: flex-end;
   gap: 4px;
   border-top: 1px solid var(--line);
-  padding-top: 12px;
+  padding-top: 14px;
   margin-top: auto;
 }
-.score-strip-cell { flex: 1; text-align: center; }
+.score-strip-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  align-self: center;
+  white-space: nowrap;
+  margin-left: 6px;
+}
+.score-strip-cell {
+  flex: 1;
+  text-align: center;
+  border: none;
+  background: transparent;
+  padding: 2px;
+}
+.score-strip-cell.drillable { cursor: pointer; border-radius: 8px; }
+.score-strip-cell.drillable:hover { background: #f0f3ff; }
 .score-strip-cell .ss-score { font-size: 16px; font-weight: 800; color: var(--ink); }
 .score-strip-cell .ss-name { font-size: 10px; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .score-strip-cell.total .ss-score { color: var(--blue); }
-.score-strip-cell.total { border-left: 1px solid var(--line); padding-left: 6px; }
+.score-strip-cell.total .ss-name { color: var(--blue); }

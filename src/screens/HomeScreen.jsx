@@ -64,10 +64,16 @@ export default function HomeScreen({ onOpenWorld, division }) {
         {/* עמודה שמאלית: דירוג + מדדים בסיכון/במיקוד */}
         <div className="home-col-side">
           <div className="panel">
+          <div className="panel-header-row">
             <h3 className="panel-title">
               דירוג איכות השירות {division ? 'ביחידות' : 'בחטיבות'}
             </h3>
-            <div className="rank-cubes">
+            <div className="rank-legend">
+              <span className="rl-item"><span className="rl-sw bar" /> ציון נוכחי</span>
+              <span className="rl-item"><span className="rl-sw target" /> יעד</span>
+            </div>
+          </div>
+          <div className="rank-cubes">
               {ranking.map((r) => (
                 <div className="rank-cube" key={r.name}>
                   <div className="rank-cube-frame">
@@ -96,10 +102,6 @@ export default function HomeScreen({ onOpenWorld, division }) {
                   <div className="rank-cube-name">{r.name}</div>
                 </div>
               ))}
-            </div>
-            <div className="rank-legend">
-              <span className="rl-item"><span className="rl-sw bar" /> ציון נוכחי</span>
-              <span className="rl-item"><span className="rl-sw target" /> יעד</span>
             </div>
           </div>
 

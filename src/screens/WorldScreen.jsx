@@ -1,71 +1,71 @@
 import React from 'react'
-import { worldMetrics, worldScore, worldTarget } from '../data.js'
+import { worldMetrics, worldScore } from '../data.js'
 import {
   DonutChart, CategoryBarChart, DivisionBarChart, DashedBar, PercentOnly, PALETTE,
 } from '../components/Charts.jsx'
 
 // מסך עולם תוכן - תצוגת תחקור עומק לכל המדדים בתחום
-export default function WorldScreen({ world, division }) {
+export default function WorldScreen({ world, division, onDivisionChange }) {
   const metrics = worldMetrics(world, division)
   const score = worldScore(world)
-  const delta = score - worldTarget(world)
 
   return (
     <div>
       <h1 className="page-title">
         <span>{world}</span>
         {score}
-        <span className={'delta ' + (delta >= 0 ? 'up' : 'down')}>
-          {Math.abs(delta)}{delta >= 0 ? '↑' : '↓'}
-        </span>
       </h1>
 
-      {division && (
-        <div className="breadcrumb"><span>מסונן לפי: {division}</span></div>
-      )}
+      <div className="breadcrumb">
+        <button onClick={() => onDivisionChange(null)}>כל החטיבות</button>
+        {division && (
+          <>
+            <span>›</span>
+            <span>{division} (יחידות)</span>
+          </>
+        )}
+      </div>
 
       <div className="metrics-grid">
         {metrics.map((m) => (
-          <MetricPanel key={m.metric} m={m} division={division} />
+          <MetricPanel key={m.metric} m={m} division={division} onDrill={onDivisionChange} />
         ))}
       </div>
     </div>
   )
 }
 
-function MetricPanel({ m, division }) {
-  // האם הסינון פעיל אך המדד לא מושפע ממנו
-  const filterIgnored = division && !m.respondsToFilter
-
+function MetricPanel({ m, division, onDrill }) {
   return (
     <div className="panel metric-panel">
       <div className="metric-head">
-        <h3 className="panel-title">
-          {m.metric} <span className="metric-score">(ציון: {m.totalScore})</span>
-        </h3>
+        <h3 className="panel-title">{m.metric}</h3>
         <p className="panel-sub">{m.note}</p>
-        {filterIgnored && (
-          <div className="filter-flag">מדד אגפי — אינו מושפע מסינון החטיבה</div>
-        )}
       </div>
 
       <div className="metric-body">
         <MetricChart m={m} />
       </div>
 
-      {/* ציוני החטיבות בתחתית הגרף */}
+      {/* ציוני החטיבות בתחתית הגרף - לחיצה על חטיבה לתחקור היחידות */}
       {m.scores.length > 0 && (
         <div className="score-strip">
+          <div className="score-strip-title">התפלגות ציונים:</div>
+          {m.scores.map((s) => (
+            <button
+              className={'score-strip-cell' + (s.isUnit ? '' : ' drillable')}
+              key={s.fullName}
+              onClick={() => !s.isUnit && onDrill(s.fullName)}
+              title={s.isUnit ? '' : 'הצג יחידות'}
+            >
+              <div className="ss-score">{s.score}</div>
+              <div className="ss-name">{s.name}</div>
+            </button>
+          ))}
           <div className="score-strip-cell total">
             <div className="ss-score">{m.totalScore}</div>
             <div className="ss-name">סה"כ</div>
           </div>
-          {m.scores.map((s) => (
-            <div className="score-strip-cell" key={s.name}>
-              <div className="ss-score">{s.score}</div>
-              <div className="ss-name">{s.name}</div>
-            </div>
-          ))}
         </div>
       )}
     </div>
@@ -77,13 +77,13 @@ function MetricChart({ m }) {
     case 'donut':
       return (
         <div className="chart-with-legend">
-          <Legend categories={m.categories} percentages={m.percentages} />
           <DonutChart
             data={m.categories.map((c, i) => ({ name: c, value: m.counts[i] }))}
             size={180}
             centerTop={m.total.toLocaleString()}
             centerBottom={m.unit}
           />
+          <Legend categories={m.categories} percentages={m.percentages} />
         </div>
       )
 

@@ -126,7 +126,7 @@ function WorldTick({ x, y, payload, data, cx, cy }) {
   const dx = x - cx
   const dy = y - cy
   const len = Math.sqrt(dx * dx + dy * dy) || 1
-  const PUSH = 26
+  const PUSH = 54
   const tx = x + (dx / len) * PUSH
   const ty = y + (dy / len) * PUSH
 
@@ -151,17 +151,17 @@ function WorldTick({ x, y, payload, data, cx, cy }) {
       <text x={tx} y={nameY} textAnchor={anchor} fill="#3a3f5c" fontSize="13" fontWeight="700">
         {payload.value}
       </text>
-      {/* תווית ציון - רקע כחול בהיר */}
+      {/* תווית ציון - בצבע הציון (כחול) */}
       <g transform={`translate(${startX}, ${badgeY})`}>
         <rect width={badgeW} height={badgeH} rx="6" fill="#e8edff" />
-        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#2f6bff" fontSize="12" fontWeight="700">
+        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#4762e5" fontSize="12" fontWeight="700">
           {score}
         </text>
       </g>
-      {/* תווית יעד - רקע אפור בהיר */}
+      {/* תווית יעד - בצבע היעד (סגול) */}
       <g transform={`translate(${startX + badgeW + gap}, ${badgeY})`}>
-        <rect width={badgeW} height={badgeH} rx="6" fill="#eef0f5" />
-        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#9aa0b4" fontSize="12" fontWeight="700">
+        <rect width={badgeW} height={badgeH} rx="6" fill="#ece9fb" />
+        <text x={badgeW / 2} y={badgeH / 2 + 1} textAnchor="middle" dominantBaseline="central" fill="#8b7fe8" fontSize="12" fontWeight="700">
           {target}
         </text>
       </g>
@@ -173,7 +173,6 @@ function SpiderLegend() {
   return (
     <div className="radar-legend">
       <span className="rdl-item"><span className="rdl-sw score" /> ציון</span>
-      <span className="rdl-vs">vs.</span>
       <span className="rdl-item"><span className="rdl-sw target" /> יעד</span>
     </div>
   )
@@ -186,7 +185,7 @@ export function SpiderChart({ data, height = 380 }) {
       <SpiderLegend />
       <div style={{ width: '100%', height }}>
         <ResponsiveContainer>
-          <RadarChart data={data} outerRadius="72%" margin={{ top: 70, right: 90, bottom: 60, left: 90 }}>
+          <RadarChart data={data} outerRadius="64%" margin={{ top: 80, right: 100, bottom: 70, left: 100 }}>
             <PolarGrid stroke="#d4d9e6" strokeDasharray="5 5" gridType="polygon" />
             <PolarAngleAxis dataKey="axis" tick={<WorldTick data={data} />} />
             <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
@@ -226,19 +225,13 @@ export function CategoryBarChart({ categories, counts, height = 220, suffix = ''
           <Tooltip content={<BarTip suffix={suffix} />} cursor={{ fill: 'rgba(47,107,255,0.06)' }} />
           <Bar dataKey="value" radius={[10, 10, 4, 4]} label={{ position: 'top', fontSize: 12, fill: '#1f2547', formatter: (v) => `${v}${suffix}` }}>
             {data.map((_, i) => (
-              <Cell key={i} fill={i === maxIndex(counts) ? '#2f6bff' : '#9db9ff'} />
+              <Cell key={i} fill="#2f6bff" />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
   )
-}
-
-function maxIndex(arr) {
-  let mi = 0
-  for (let i = 1; i < arr.length; i++) if (arr[i] > arr[mi]) mi = i
-  return mi
 }
 
 function BarTip({ active, payload, label, suffix = '' }) {
@@ -282,7 +275,7 @@ export function DivisionBarChart({ data, valueUnit = 'percent', height = 210 }) 
             }}
           >
             {data.map((_, i) => (
-              <Cell key={i} fill={i === maxIndex(data.map((d) => d.value)) ? '#2f6bff' : '#9db9ff'} />
+              <Cell key={i} fill="#2f6bff" />
             ))}
           </Bar>
         </BarChart>
@@ -291,17 +284,21 @@ export function DivisionBarChart({ data, valueUnit = 'percent', height = 210 }) 
   )
 }
 
-// בר מקווקו - אחוז + כמות מוחלטת
+// מד אחוז בסגמנטים - אחוז גדול + כמות, ושורת "כדורים" שמתמלאת מימין לפי האחוז
 export function DashedBar({ percent, count, countUnit }) {
+  const SEGMENTS = 12
+  const filled = Math.round((percent / 100) * SEGMENTS)
   return (
-    <div className="dashed-bar">
-      <div className="dashed-bar-track">
-        <div className="dashed-bar-fill" style={{ width: `${percent}%` }}>
-          <span className="dashed-bar-pct">{percent}%</span>
-        </div>
+    <div className="seg-bar">
+      <div className="seg-bar-head">
+        <span className="seg-bar-pct">{percent}%</span>
+        <span className="seg-bar-count">{count.toLocaleString()} {countUnit}</span>
       </div>
-      <div className="dashed-bar-count">
-        {count.toLocaleString()} {countUnit}
+      <div className="seg-bar-track">
+        {Array.from({ length: SEGMENTS }).map((_, i) => (
+          // מילוי מימין: הכדורים הימניים (האינדקסים הגבוהים) נדלקים
+          <span key={i} className={'seg-pill' + (i >= SEGMENTS - filled ? ' on' : '')} />
+        ))}
       </div>
     </div>
   )
